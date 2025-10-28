@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -48,16 +48,23 @@ const Register = () => {
             email: validatedData.email,
             phone: validatedData.phone,
             address: validatedData.address,
+            password: validatedData.password,
           },
         ]);
 
       if (dbError) throw dbError;
 
-      // Store user name in localStorage for welcome message
-      localStorage.setItem("userName", validatedData.fullName);
+      // Store user credentials for login
+      localStorage.setItem(`user_${validatedData.email}`, JSON.stringify({
+        email: validatedData.email,
+        fullName: validatedData.fullName,
+        phone: validatedData.phone,
+        address: validatedData.address,
+        password: validatedData.password,
+      }));
       
-      toast.success("Registration successful! Welcome to our store.");
-      navigate("/store");
+      toast.success("Registration successful! Please login to continue.");
+      navigate("/login");
     } catch (error: any) {
       if (error instanceof z.ZodError) {
         toast.error(error.errors[0].message);
@@ -159,6 +166,14 @@ const Register = () => {
             </Button>
           </form>
         </CardContent>
+        <CardFooter className="flex flex-col space-y-2">
+          <p className="text-sm text-muted-foreground text-center">
+            Already have an account?{" "}
+            <Link to="/login" className="text-primary hover:underline font-medium">
+              Login here
+            </Link>
+          </p>
+        </CardFooter>
       </Card>
     </div>
   );

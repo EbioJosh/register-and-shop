@@ -39,13 +39,13 @@ const Index = () => {
               Get Started
             </Button>
             <Button
-              onClick={() => navigate("/store")}
+              onClick={() => navigate("/login")}
               size="lg"
               variant="outline"
               className="hover:border-primary transition-smooth text-lg px-8"
             >
               <ShoppingBag className="mr-2 h-5 w-5" />
-              Browse Store
+              Login to Shop
             </Button>
           </div>
         </div>

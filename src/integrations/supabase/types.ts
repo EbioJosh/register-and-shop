@@ -14,6 +14,83 @@ export type Database = {
   }
   public: {
     Tables: {
+      order_items: {
+        Row: {
+          created_at: string | null
+          id: string
+          order_id: string
+          product_id: number
+          product_name: string
+          product_price: number
+          quantity: number
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          order_id: string
+          product_id: number
+          product_name: string
+          product_price: number
+          quantity: number
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          order_id?: string
+          product_id?: number
+          product_name?: string
+          product_price?: number
+          quantity?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          created_at: string | null
+          delivery_notes: string | null
+          id: string
+          payment_method: string
+          shipping_address: string
+          shipping_phone: string
+          status: string | null
+          total_amount: number
+          user_email: string
+          user_name: string
+        }
+        Insert: {
+          created_at?: string | null
+          delivery_notes?: string | null
+          id?: string
+          payment_method: string
+          shipping_address: string
+          shipping_phone: string
+          status?: string | null
+          total_amount: number
+          user_email: string
+          user_name: string
+        }
+        Update: {
+          created_at?: string | null
+          delivery_notes?: string | null
+          id?: string
+          payment_method?: string
+          shipping_address?: string
+          shipping_phone?: string
+          status?: string | null
+          total_amount?: number
+          user_email?: string
+          user_name?: string
+        }
+        Relationships: []
+      }
       registrations: {
         Row: {
           address: string
@@ -21,6 +98,7 @@ export type Database = {
           email: string
           full_name: string
           id: string
+          password: string
           phone: string
         }
         Insert: {
@@ -29,6 +107,7 @@ export type Database = {
           email: string
           full_name: string
           id?: string
+          password?: string
           phone: string
         }
         Update: {
@@ -37,6 +116,7 @@ export type Database = {
           email?: string
           full_name?: string
           id?: string
+          password?: string
           phone?: string
         }
         Relationships: []

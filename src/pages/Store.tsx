@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ShoppingCart, Minus, Plus, Trash2 } from "lucide-react";
+import { ShoppingCart, Minus, Plus, Trash2, LogOut } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
 interface Product {
@@ -63,14 +65,24 @@ const products: Product[] = [
 ];
 
 const Store = () => {
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
   const [cart, setCart] = useState<CartItem[]>([]);
-  const [userName, setUserName] = useState<string>("");
   const [showCart, setShowCart] = useState(false);
 
-  useEffect(() => {
-    const name = localStorage.getItem("userName");
-    if (name) setUserName(name);
-  }, []);
+  const handleLogout = () => {
+    logout();
+    toast.success("Logged out successfully");
+    navigate("/login");
+  };
+
+  const handleCheckout = () => {
+    if (cart.length === 0) {
+      toast.error("Your cart is empty");
+      return;
+    }
+    navigate("/checkout", { state: { cart } });
+  };
 
   const addToCart = (product: Product) => {
     setCart((prevCart) => {
@@ -113,21 +125,31 @@ const Store = () => {
               <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
                 ShopHub
               </h1>
-              {userName && (
-                <p className="text-sm text-muted-foreground">Welcome back, {userName}!</p>
+              {user && (
+                <p className="text-sm text-muted-foreground">Welcome back, {user.fullName}!</p>
               )}
             </div>
-            <Button
-              onClick={() => setShowCart(!showCart)}
-              variant="outline"
-              className="relative hover:border-primary transition-smooth"
-            >
-              <ShoppingCart className="mr-2 h-4 w-4" />
-              Cart
-              {totalItems > 0 && (
-                <Badge className="ml-2 bg-gradient-primary">{totalItems}</Badge>
-              )}
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                onClick={() => setShowCart(!showCart)}
+                variant="outline"
+                className="relative hover:border-primary transition-smooth"
+              >
+                <ShoppingCart className="mr-2 h-4 w-4" />
+                Cart
+                {totalItems > 0 && (
+                  <Badge className="ml-2 bg-gradient-primary">{totalItems}</Badge>
+                )}
+              </Button>
+              <Button
+                onClick={handleLogout}
+                variant="outline"
+                className="hover:border-destructive hover:text-destructive transition-smooth"
+              >
+                <LogOut className="mr-2 h-4 w-4" />
+                Logout
+              </Button>
+            </div>
           </div>
         </div>
       </header>
@@ -230,7 +252,7 @@ const Store = () => {
                   </div>
                   <Button
                     className="w-full bg-gradient-primary hover:opacity-90 transition-smooth"
-                    onClick={() => toast.success("Checkout feature coming soon!")}
+                    onClick={handleCheckout}
                   >
                     Checkout
                   </Button>
